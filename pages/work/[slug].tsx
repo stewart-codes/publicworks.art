@@ -5,7 +5,6 @@ import { RowWideContainer } from "../../src/components/layout/RowWideContainer";
 import SpinnerLoading from "../../src/components/loading/Loader";
 import { LiveMedia } from "../../src/components/media/LiveMedia";
 import { PagedGallery } from "../../src/components/media/PagedGallery";
-import { MintPrice } from "../../src/components/mint/MintPrice";
 import { StarsAddressName } from "../../src/components/name/StarsAddressName";
 import { NumMinted } from "../../src/components/work/NumMinted";
 import { useNftMetadata } from "../../src/hooks/useNftMetadata";
@@ -23,8 +22,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { stores } from "src/store/stores";
-import config from "src/wasm/config";
-import { useNumMintedOnChain } from "../../src/hooks/useNumMintedOnChain";
+import { useNumMintedDb } from "../../src/hooks/useNumMintedDb";
 
 export async function getStaticPaths() {
   console.log("getStaticPaths, works");
@@ -88,7 +86,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     data: numMinted,
     error: numMintedError,
     isLoading: numMintedLoading,
-  } = useNumMintedOnChain(work?.minter, 2000);
+  } = useNumMintedDb(work?.slug, 2000);
 
   const [previewTokenId, setPreviewTokenId] = useState<string | null>(null);
   useEffect(() => {
@@ -99,7 +97,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
   }, [previewTokenId, numMinted]);
 
   const metadata = useNftMetadata({
-    sg721: work.sg721,
+    workId: work.id,
     tokenId: previewTokenId,
     refresh: false,
   });
@@ -171,15 +169,12 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                     <NumMinted
                       work={work}
                       slug={work.slug}
-                      minter={work.minter}
                     />
                   ) : (
                     <div>Deploy your work to view</div>
                   )}
                 </div>
               </div>
-              <MintPrice className={"mt-4"} minter={work.minter} work={work} />
-
               <div className={`mt-4 ${styles.displayLinebreak}`}>
                 {work.description}
               </div>
@@ -230,7 +225,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
         <Container>
           <RowWideContainer className={`${styles.tokensGrid}`}>
             <h2 className={"Margin-T-4"}>Mints</h2>
-            {config.testnet ? (
+            {process.env.NEXT_PUBLIC_TESTNET === "true" ? (
               <div className={"mt-2"}>** Showing Testnet Mints **</div>
             ) : (
               <></>

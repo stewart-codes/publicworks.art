@@ -9,10 +9,9 @@ import MainLayout from "../../../src/layout/MainLayout";
 import { cn } from "../../../src/lib/css/cs";
 import { stores } from "../../../src/store/stores";
 import {
-  getTokenMetadata,
+  getTokenMetadataFromApi,
   normalizeIpfsCdnUri,
   normalizeIpfsUri,
-  normalizeMetadataUri,
 } from "../../../src/wasm/metadata";
 import styles from "../../../styles/Work.module.scss";
 import {
@@ -129,12 +128,8 @@ const WorkTokenPage = ({
   work = data || work;
 
   const tokenMetadata = useQuery({
-    queryKey: ["gettokenmetadata", slug, tokenId, work?.sg721],
+    queryKey: ["gettokenmetadata", slug, tokenId, work?.id],
     queryFn: async () => {
-      const sg721 = work?.sg721;
-      if (!sg721) {
-        throw new Error("No sg721");
-      }
       if (
         !tokenId ||
         Array.isArray(tokenId) ||
@@ -145,16 +140,12 @@ const WorkTokenPage = ({
       }
 
       try {
-        return getTokenMetadata(
-          sg721,
-          tokenId,
-          process.env.NEXT_PUBLIC_IPFS_GATEWAY
-        );
+        return getTokenMetadataFromApi(work.id, tokenId);
       } catch (e) {
         return null;
       }
     },
-    enabled: !!work && !!slug && !!tokenId && !!work?.sg721,
+    enabled: !!work && !!slug && !!tokenId,
   });
 
   type Token = {
@@ -273,12 +264,14 @@ const WorkTokenPage = ({
                 <></>
               )}
 
-              <div
-                className={`${styles.workAuthorLink} ${styles.displayLinebreak} ${styles.sectionBreak}`}
-              >
-                {"Owned by: "}
-                <StarsAddressName address={owner} />
-              </div>
+              {owner && (
+                <div
+                  className={`${styles.workAuthorLink} ${styles.displayLinebreak} ${styles.sectionBreak}`}
+                >
+                  {"Owned by: "}
+                  <StarsAddressName address={owner} />
+                </div>
+              )}
 
               <div
                 className={`${styles.displayLinebreak} ${styles.sectionBreak}`}

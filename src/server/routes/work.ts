@@ -9,7 +9,6 @@ import {
   getMetadataWorkId,
   uploadFileToPinata,
 } from "../../ipfs/pinata";
-import chainInfo from "../../stargaze/chainInfo";
 import { CreateProjectRequestZ, editProjectZod } from "../../store";
 import { stores } from "../../store/stores";
 import { normalizeMetadataUri } from "../../wasm/metadata";
@@ -82,27 +81,8 @@ const editWorkContracts = authorizedProcedure
     if (!work || work.owner.id !== user.id) {
       throw new TRPCError({ code: "NOT_FOUND" });
     }
-    //fetch version on chain
-    const fetchCodeId = async (address: string) => {
-      try {
-        const url = `${chainInfo().rest}/cosmwasm/wasm/v1/contract/${address}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        return parseInt(data.contract_info.code_id);
-      } catch (e) {
-        return 0;
-      }
-    };
-    const [sg721CodeId, minterCodeId] = await Promise.all([
-      fetchCodeId(input.sg721),
-      fetchCodeId(input.minter),
-    ]);
-    if (!sg721CodeId || !minterCodeId) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "could not fetch code id on chain",
-      });
-    }
+    const sg721CodeId = 0;
+    const minterCodeId = 0;
 
     if (
       sg721CodeId === work.sg721CodeId &&

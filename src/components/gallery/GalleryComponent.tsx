@@ -6,8 +6,7 @@ import stylesWork from "../../../styles/Work.module.scss";
 import { useRouter } from "next/router";
 import { isStarAddress, shortenAddress } from "../../wasm/address";
 import { StarsAddressName } from "../name/StarsAddressName";
-import { useCollectionSize } from "../../hooks/useCollectionSize";
-import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
+import { useNumMintedDb } from "../../hooks/useNumMintedDb";
 
 export const GalleryComponent = ({
   work,
@@ -21,8 +20,7 @@ export const GalleryComponent = ({
   });
   const w = work;
   const router = useRouter();
-  const numMinted = useNumMintedOnChain(work.minter);
-  const collectionSize = useCollectionSize(work.minter);
+  const numMinted = useNumMintedDb(work.slug);
 
   let creatorName = w.creator;
   if (isStarAddress(creatorName)) {
@@ -54,11 +52,11 @@ export const GalleryComponent = ({
             <StarsAddressName address={work.ownerAddress || work.creator} />
           </div>
           <div>
-            {numMinted.isLoading || collectionSize.isLoading ? (
+            {numMinted.isLoading ? (
               "..."
             ) : (
               <>
-                {numMinted.data} of {collectionSize.data}
+                {numMinted.data} of {work.maxTokens}
               </>
             )}
           </div>

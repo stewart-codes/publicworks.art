@@ -143,13 +143,7 @@ export default function WalletProvider({ children }: { children: ReactNode }) {
 
   // Initial load / or Keplr Wallet Changed
   useEffect(() => {
-    loginIfLocalData();
-
     window.addEventListener("keplr_keystorechange", () => {
-      // console.log(
-      //   'Key store in Keplr is changed. You may need to refetch the account info.'
-      // );
-
       loginIfLocalData();
     });
     setLoading(false);

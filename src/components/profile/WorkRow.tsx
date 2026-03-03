@@ -17,7 +17,7 @@ import { useInvalidateWork } from "../../hooks/work/useInvalidateWork";
 import useUserContext from "../../context/user/useUserContext";
 import ModalStore from "../../modal/ModalStore";
 import { useClientLoginMutation } from "src/hooks/useClientLoginMutation";
-import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
+import { useNumMintedDb } from "../../hooks/useNumMintedDb";
 
 interface Props {
   work: WorkSerializable;
@@ -48,7 +48,7 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
 }
 
 export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
-  const numMinted = useNumMintedOnChain(work.minter);
+  const numMinted = useNumMintedDb(work.slug);
   const lastMintedToken = useLastMintedToken(work.slug);
   const { user } = useUserContext();
   const collectionSize = work.maxTokens;

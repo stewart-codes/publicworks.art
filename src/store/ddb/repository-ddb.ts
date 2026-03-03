@@ -318,6 +318,17 @@ export class RepositoryDdb extends DddTable {
     };
   }
 
+  async getProjectTokenCount(
+    chainId: string,
+    sg721: string
+  ): Promise<number> {
+    const result = await this.models.WorkToken.find(
+      { pk: `Chain:${chainId}#sg721:${sg721}` },
+      { count: true }
+    );
+    return (result as any).count ?? 0;
+  }
+
   async getProjectTokens(
     chainId: string,
     sg721: string,

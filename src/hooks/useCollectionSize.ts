@@ -1,34 +1,12 @@
-import config from "../wasm/config";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCollectionSize = (
-  minter: string | undefined | null,
-  refreshInterval?: number
-) => {
+export const useCollectionSize = (maxTokens: number | undefined | null) => {
   const query = useQuery({
-    queryKey: [
-      `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/eyJjb25maWciOnt9fQ==`,
-    ],
+    queryKey: ["collectionSize", maxTokens],
     queryFn: async () => {
-      if (!minter) {
-        return 0;
-      }
-      const res = await fetch(
-        `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${minter}/smart/eyJjb25maWciOnt9fQ==`
-      );
-      if (!res.ok) {
-        throw new Error(
-          "failed to get collection size" +
-            res.status +
-            ", " +
-            (await res.text().toString())
-        );
-      }
-      const json = await res.json();
-      return (json?.data?.num_tokens as number | null) || 0;
+      return maxTokens ?? 0;
     },
-    refetchInterval: refreshInterval,
-    enabled: !!minter,
+    enabled: maxTokens != null,
   });
 
   return query;

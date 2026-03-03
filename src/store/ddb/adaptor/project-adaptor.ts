@@ -355,8 +355,15 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     return Promise.resolve(null);
   }
 
-  getTokenCount(slug: string): Promise<number> {
-    return Promise.resolve(0);
+  async getTokenCount(slug: string): Promise<number> {
+    const project = await this.repository.getProjectBySlug(
+      chainInfo().chainId,
+      slug
+    );
+    if (!project?.sg721) {
+      return 0;
+    }
+    return this.repository.getProjectTokenCount(chainInfo().chainId, project.sg721);
   }
 
   async getProjectTokens2({

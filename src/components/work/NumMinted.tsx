@@ -1,14 +1,12 @@
 import styles from "../../../styles/Work.module.scss";
-import { useCollectionSize } from "../../hooks/useCollectionSize";
 import { FC } from "react";
 import * as React from "react";
-import { Card, Placeholder } from "react-bootstrap";
+import { Placeholder } from "react-bootstrap";
 import { WorkSerializable } from "../../db-typeorm/serializable";
-import { useNumMintedOnChain } from "../../hooks/useNumMintedOnChain";
+import { useNumMintedDb } from "../../hooks/useNumMintedDb";
 
 interface NumMintedParams {
   slug: string;
-  minter: string;
   work: WorkSerializable;
 }
 
@@ -17,21 +15,16 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
     data: numMinted,
     error: numMintedError,
     isLoading: numMintedLoading,
-  } = useNumMintedOnChain(params.minter);
-  const {
-    data: collectionSize,
-    error: collectionSizeError,
-    isLoading: collSizeLoading,
-  } = useCollectionSize(params.minter);
+  } = useNumMintedDb(params.slug);
+
+  const collectionSize = params.work.maxTokens;
 
   const numMintedText =
     numMintedError || !Number.isFinite(numMinted) ? "-" : numMinted;
-  const collectionSizeText =
-    collectionSizeError || !Number.isFinite(collectionSize)
-      ? "?"
-      : collectionSize;
-  // numMintedLoading = true;
-  // collSizeLoading = true;
+  const collectionSizeText = !Number.isFinite(collectionSize)
+    ? "?"
+    : collectionSize;
+
   return (
     <span className={styles.workAuthor}>
       <>
@@ -43,13 +36,7 @@ export const NumMinted: FC<NumMintedParams> = (params: NumMintedParams) => {
           numMintedText
         )}
         {" of "}
-        {collSizeLoading ? (
-          <Placeholder animation="glow">
-            <Placeholder className={"d-inline-block Width-3"} />
-          </Placeholder>
-        ) : (
-          collectionSizeText
-        )}
+        {collectionSizeText}
         {" minted"}
       </>
     </span>

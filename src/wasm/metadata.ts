@@ -1,5 +1,4 @@
 import { NftMetadata } from "../hooks/useNftMetadata";
-import config from "./config";
 
 export async function fetchTokenUriInfo(tokenUri: string) {
   // Some artists have a double slash, so we need to clean it
@@ -63,48 +62,34 @@ export function getAnimationUri(ipfsUri: string, queryArgs = "") {
   return `${normalizeIpfsUri(ipfsUri)}${queryArgs}`;
 }
 
-export const getTokenMetadata = async (
-  sg721: string,
-  tokenId: string,
-  ipfsHost = "https://ipfs.io/ipfs/"
-) => {
-  const msgBase64 = Buffer.from(
-    JSON.stringify({ nft_info: { token_id: tokenId } })
-  ).toString("base64");
-  const res = await fetch(
-    `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
-  );
+export function getMetadataBaseUrl() {
+  return process.env.NEXT_PUBLIC_TESTNET === "true"
+    ? "https://testnet-metadata.publicworks.art"
+    : "https://metadata.publicworks.art";
+}
+
+export const getTokenMetadataFromApi = async (
+  workId: number,
+  tokenId: string
+): Promise<NftMetadata | null> => {
+  const baseUrl = getMetadataBaseUrl();
+  const res = await fetch(`${baseUrl}/${workId}/${tokenId}`);
   if (!res.ok) {
+    if (res.status === 404) return null;
     const text = await res.text();
-    console.log("status: " + res.status, " text: " + text);
-    if (text.includes("not found")) {
-      return null;
-    }
-    throw new Error("Failed to fetch token info");
+    if (text.includes("not found")) return null;
+    throw new Error("Failed to fetch token metadata");
   }
-  const data = await res.json();
-  const url = data?.data?.token_uri;
-  if (!url) {
-    throw new Error("missing token_uri");
-  }
-  return await fetchTokenUriInfo(normalizeMetadataUri(url, ipfsHost));
+  const nftInfo = await res.json();
+  nftInfo.image = getImageUri(nftInfo.image);
+  nftInfo.animation_url = getAnimationUri(nftInfo.animation_url);
+  nftInfo.imageCdn = normalizeIpfsCdnUri(nftInfo.image);
+  return nftInfo as NftMetadata;
 };
 
-export const getTokenOwner = async (sg721: string, tokenId: string) => {
-  const msgBase64 = Buffer.from(
-    JSON.stringify({ owner_of: { token_id: tokenId } })
-  ).toString("base64");
-  const res = await fetch(
-    `${config.restEndpoint}/cosmwasm/wasm/v1/contract/${sg721}/smart/${msgBase64}`
-  );
-  if (!res.ok) {
-    console.log("status: " + res.status, " text: " + (await res.text()));
-    return undefined;
-  }
-  const data = await res.json();
-  const owner = data?.data?.owner;
-  if (!owner) {
-    return undefined;
-  }
-  return owner;
+export const getTokenMetadata = async (
+  workId: number,
+  tokenId: string
+): Promise<NftMetadata | null> => {
+  return getTokenMetadataFromApi(workId, tokenId);
 };
