@@ -45,3 +45,5 @@ build/
 **/.turbo
 
 apps/publicworks.art/.sentryclirc
+
+.claude
