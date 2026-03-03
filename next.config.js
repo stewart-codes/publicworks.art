@@ -17,6 +17,7 @@ const articlesAllowedDomains =
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  output: 'standalone',
   experimental: {},
   productionBrowserSourceMaps: true,
   images: {
