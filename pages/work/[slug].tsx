@@ -240,7 +240,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
             {!!numMinted && !!work.sg721 && (
               <PagedGallery
                 slug={work.slug}
-                sg721={work.sg721}
+                workId={work.id}
                 totalNumTokens={numMinted}
               />
             )}

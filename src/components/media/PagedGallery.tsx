@@ -7,14 +7,14 @@ import { PagesToRender } from "../../../src/hooks/usePagination";
 
 interface Props {
   totalNumTokens: number;
-  sg721: string;
+  workId: number;
   slug: string;
 }
 
 export const PagedGallery: FC<Props> = ({
   slug,
   totalNumTokens,
-  sg721,
+  workId,
 }: Props) => {
   const router = useRouter();
   const pageIn =
@@ -81,7 +81,7 @@ export const PagedGallery: FC<Props> = ({
         <Form.Group className="mb-3" controlId="sortBy"></Form.Group>
       </Form>
       <Row>
-        <Gallery slug={slug} sg721={sg721} tokenIds={tokenIds} />
+        <Gallery slug={slug} workId={workId} tokenIds={tokenIds} />
       </Row>
       <Row>
         <Col />

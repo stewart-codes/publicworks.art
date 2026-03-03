@@ -5,14 +5,14 @@ import { useNftMetadata } from "../../hooks/useNftMetadata";
 
 export const Token = ({
   tokenId,
-  sg721,
+  workId,
   slug,
 }: {
-  sg721: string;
+  workId: number;
   tokenId: string;
   slug: string;
 }) => {
-  const metadata = useNftMetadata({ tokenId, sg721 });
+  const metadata = useNftMetadata({ tokenId, workId });
 
   const imageUrl = metadata?.data?.image
     ? metadata?.data?.image + "_medium"

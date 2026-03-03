@@ -3,12 +3,12 @@ import { Token } from "./Token";
 import styles from "../../../styles/Work.module.scss";
 
 export const Gallery = ({
-  sg721,
+  workId,
   tokenIds,
   slug,
 }: {
   slug: string;
-  sg721: string;
+  workId: number;
   tokenIds: string[];
 }) => {
   return (
@@ -21,7 +21,7 @@ export const Gallery = ({
           key={tokenId}
           className={styles.workGalleryItem}
         >
-          <Token slug={slug} sg721={sg721} tokenId={tokenId} />
+          <Token slug={slug} workId={workId} tokenId={tokenId} />
         </Col>
       ))}
     </>
