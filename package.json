@@ -50,7 +50,7 @@
     "adm-zip": "^0.5.10",
     "base-path-converter": "^1.0.2",
     "bezier-js": "^6.1.4",
-    "bootstrap": "^5.3.2",
+    "bootstrap": "^5.3.8",
     "chart.js": "4.4.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "chartjs-plugin-datalabels": "2.2.0",

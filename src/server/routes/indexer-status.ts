@@ -16,7 +16,9 @@ const getLastSweptBlock = baseProcedure
         height: lastSweptBlockHeight,
         timestamp: lastSweptBlock.updatedAt.toISOString(),
       },
-      latestBlockHeight: null,
+      latestBlockHeight: null as null|{
+        height:bigint;timestamp:string
+      },
     };
   });
 

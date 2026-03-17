@@ -36,7 +36,7 @@ const Status = () => {
                   </p>
                 </div>
                 <FieldControl name={"Stargaze's latest block:"}>
-                  #{latestBlockHeight}
+                  #{latestBlockHeight.toString()}
                 </FieldControl>
                 <FieldControl name={"Public works lasted indexed block:"}>
                   #{lastSweptBlock} {secondsLabel}

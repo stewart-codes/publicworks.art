@@ -12,6 +12,7 @@ import {
   getTokenMetadataFromApi,
   normalizeIpfsCdnUri,
   normalizeIpfsUri,
+  normalizeMetadataUri,
 } from "../../../src/wasm/metadata";
 import styles from "../../../styles/Work.module.scss";
 import {

@@ -17,7 +17,7 @@ export function useNameInfo(name: string) {
 export function useProfileInfo({ address }: { address?: string }) {
   return {
     walletName: "",
-    textRecords: undefined,
+      textRecords: undefined as undefined | {name:string,value:string;verified:boolean}[],
     isLoading: false,
   };
 }
