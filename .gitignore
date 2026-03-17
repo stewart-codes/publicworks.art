@@ -47,3 +47,5 @@ build/
 apps/publicworks.art/.sentryclirc
 
 .claude
+
+.vscode
