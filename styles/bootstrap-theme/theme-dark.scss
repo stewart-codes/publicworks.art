@@ -1,4 +1,4 @@
-@import "/styles/variables.module";
+@use "/styles/variables.module" as *;
 
 /*! `Custom` Bootstrap 5 theme */
 @import url(https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css);
@@ -31,4 +31,4 @@ $body-bg: $pw-bg-color;
 
 //:export
 
-@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+@use "../../node_modules/bootstrap/scss/bootstrap.scss" as *;
