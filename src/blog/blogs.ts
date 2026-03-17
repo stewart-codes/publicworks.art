@@ -127,7 +127,7 @@ Edition of 400. 500 $STARS each.
     title: "Thanks for the support!",
     author: "skymagic.stars",
     authorAddress: "stars1euu359d2cwe46j8a8fqkmcrhzjq6j642htt7rn",
-    image:"/blog-assets/archived.jpg",
+    image: "/blog-assets/archived.jpg",
     blurb: `In this blog post, skymagic thanks the community for their support.`,
 
     content: `Publicworks.art minted over 3500 one of a kind artworks on Stargaze. This would not have been possible without the support of the community.

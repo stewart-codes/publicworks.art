@@ -166,10 +166,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                     />
                   </div>
                   {work.sg721 && work.minter ? (
-                    <NumMinted
-                      work={work}
-                      slug={work.slug}
-                    />
+                    <NumMinted work={work} slug={work.slug} />
                   ) : (
                     <div>Deploy your work to view</div>
                   )}

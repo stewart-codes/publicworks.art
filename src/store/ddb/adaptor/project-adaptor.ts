@@ -363,7 +363,10 @@ export class RepositoryDbbAdaptor implements ProjectRepositoryI {
     if (!project?.sg721) {
       return 0;
     }
-    return this.repository.getProjectTokenCount(chainInfo().chainId, project.sg721);
+    return this.repository.getProjectTokenCount(
+      chainInfo().chainId,
+      project.sg721
+    );
   }
 
   async getProjectTokens2({
