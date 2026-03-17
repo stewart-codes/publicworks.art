@@ -1,4 +1,4 @@
-@use "/styles/variables.module" as *;
+@import "/styles/variables.module";
 
 .hoverIcon:hover {
   color: $primary;

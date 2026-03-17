@@ -1,4 +1,4 @@
-@use "/styles/variables.module" as *;
+@import "/styles/variables.module";
 
 .sectionGap {
   padding-top: calc($spacer * 1.5);
