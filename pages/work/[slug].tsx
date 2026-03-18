@@ -180,7 +180,11 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
               <div className={"d-flex gap-2"}>
                 {metadata?.data?.animation_url && (
                   <Button
-                    variant={showLive && !showCover ? "outline-secondary" : "outline-primary"}
+                    variant={
+                      showLive && !showCover
+                        ? "outline-secondary"
+                        : "outline-primary"
+                    }
                     size="sm"
                     onClick={() => {
                       setShowCover(false);
@@ -192,7 +196,9 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 )}
                 {work.coverImageCid && (
                   <Button
-                    variant={showCover ? "outline-secondary" : "outline-primary"}
+                    variant={
+                      showCover ? "outline-secondary" : "outline-primary"
+                    }
                     size="sm"
                     onClick={() => setShowCover((v) => !v)}
                   >
