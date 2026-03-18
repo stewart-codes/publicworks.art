@@ -93,6 +93,7 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
 
   const defaultToLive = LIVE_VIEW_DEFAULT_SLUGS.includes(work.slug);
   const [showLive, setShowLive] = useState(defaultToLive);
+  const [showCover, setShowCover] = useState(false);
 
   const [previewTokenId, setPreviewTokenId] = useState<string | null>(null);
   useEffect(() => {
@@ -124,7 +125,12 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
         <Container>
           <RowSquareContainer>
             <div className={"tw-w-full tw-aspect-square tw-relative"}>
-              {metadata.isLoading ? (
+              {showCover && work.coverImageCid ? (
+                <img
+                  className={"tw-w-full tw-h-full tw-object-contain"}
+                  src={normalizeIpfsUri("ipfs://" + work.coverImageCid)}
+                />
+              ) : !previewTokenId || metadata.isLoading ? (
                 <div
                   className={
                     "tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center"
@@ -133,10 +139,20 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   <SpinnerLoading />
                 </div>
               ) : metadata.isError || !metadata?.data?.animation_url ? (
-                <img
-                  className={"tw-w-full tw-h-full tw-object-contain"}
-                  src={normalizeIpfsUri("ipfs://" + work.coverImageCid)}
-                />
+                imageUrl ? (
+                  <img
+                    className={"tw-w-full tw-h-full tw-object-contain"}
+                    src={imageUrl}
+                  />
+                ) : (
+                  <div
+                    className={
+                      "tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center"
+                    }
+                  >
+                    <SpinnerLoading />
+                  </div>
+                )
               ) : showLive ? (
                 <LiveMedia
                   ipfsUrl={metadata.data.animation_url}
@@ -161,14 +177,26 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                 "mt-2 d-flex justify-content-between align-items-center"
               }
             >
-              <div>
+              <div className={"d-flex gap-2"}>
                 {metadata?.data?.animation_url && (
                   <Button
-                    variant={showLive ? "outline-secondary" : "outline-primary"}
+                    variant={showLive && !showCover ? "outline-secondary" : "outline-primary"}
                     size="sm"
-                    onClick={() => setShowLive((v) => !v)}
+                    onClick={() => {
+                      setShowCover(false);
+                      setShowLive((v) => !v);
+                    }}
                   >
-                    {showLive ? "Show Image" : "View Live"}
+                    {showLive && !showCover ? "Show Image" : "View Live"}
+                  </Button>
+                )}
+                {work.coverImageCid && (
+                  <Button
+                    variant={showCover ? "outline-secondary" : "outline-primary"}
+                    size="sm"
+                    onClick={() => setShowCover((v) => !v)}
+                  >
+                    {showCover ? "Hide Cover" : "View Cover Image"}
                   </Button>
                 )}
               </div>
@@ -181,10 +209,12 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
                   }
                 >
                   <span>
-                    {metadata.data ? (
+                    {showCover ? (
+                      <>Showing cover image</>
+                    ) : metadata.data ? (
                       <>Showing #{previewTokenId}</>
                     ) : (
-                      <>Showing cover image</>
+                      <>Loading...</>
                     )}
                   </span>
                 </Link>
