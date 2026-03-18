@@ -26,7 +26,7 @@ import { GetStaticProps, InferGetStaticPropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { ReactElement, useMemo, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import SpinnerLoading from "src/components/loading/Loader";
 import { trpcNextPW } from "src/server/utils/trpc";
 import Image from "next/image";
@@ -111,6 +111,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
+// Slugs that should default to showing the live view
+const LIVE_VIEW_DEFAULT_SLUGS = ["helio"];
+
 const WorkTokenPage = ({
   work,
   slug,
@@ -119,6 +122,8 @@ const WorkTokenPage = ({
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const [notFound, setNotFound] = useState(false);
+  const defaultToLive = LIVE_VIEW_DEFAULT_SLUGS.includes(slug);
+  const [showLive, setShowLive] = useState(defaultToLive);
 
   const workQuery = trpcNextPW.works.getWorkBySlug.useQuery(
     { slug: slug?.toString() || "" },
@@ -206,31 +211,53 @@ const WorkTokenPage = ({
           )}
 
           <RowSquareContainer>
-            <div
-              className={`${styles.align_center} align-self-center`}
-              style={{ minHeight: 500 }}
-            >
+            <div className={"tw-w-full tw-aspect-square tw-relative"}>
               {errorMetadata ? (
                 <div>Something went wrong</div>
               ) : notFoundActual ? (
                 <div>Not Found</div>
               ) : tokenMetadata.isLoading ? (
-                <SpinnerLoading />
-              ) : token?.image &&
-                process.env.NEXT_PUBLIC_IMAGE_TOKENS === "true" ? (
+                <div
+                  className={
+                    "tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center"
+                  }
+                >
+                  <SpinnerLoading />
+                </div>
+              ) : showLive && tokenMetadata?.data?.animation_url ? (
+                <LiveMedia
+                  ipfsUrl={tokenMetadata.data.animation_url}
+                  minHeight={500}
+                  className={"tw-w-full tw-h-full tw-relative"}
+                />
+              ) : token?.image ? (
                 <Image
                   src={token.image}
                   alt={"nft media"}
                   width={500}
                   height={500}
+                  className={"tw-object-contain"}
+                  style={{ width: "100%", height: "100%" }}
                 />
               ) : (
                 <LiveMedia
                   ipfsUrl={tokenMetadata?.data?.animation_url || ""}
                   minHeight={500}
+                  className={"tw-w-full tw-h-full tw-relative"}
                 />
               )}
             </div>
+            {tokenMetadata?.data?.animation_url && token?.image && (
+              <div className={"mt-2"}>
+                <Button
+                  variant={showLive ? "outline-secondary" : "outline-primary"}
+                  size="sm"
+                  onClick={() => setShowLive((v) => !v)}
+                >
+                  {showLive ? "Show Image" : "View Live"}
+                </Button>
+              </div>
+            )}
           </RowSquareContainer>
         </Container>
         <Container>

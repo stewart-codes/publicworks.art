@@ -20,6 +20,7 @@ interface LiveMediaParams {
       };
   minHeight: number;
   style?: CSSProperties | undefined;
+  className?: string;
 }
 const isSameUrl = (url1: string, url2: string): boolean => {
   return trimTrailingSlash(url1) === trimTrailingSlash(url2);
@@ -53,9 +54,15 @@ export const LiveMedia: FC<LiveMediaParams> = (params: LiveMediaParams) => {
   }, [url, frame, setAppIsLoading]);
 
   return (
-    <div className={"tw-w-full tw-aspect-square"}>
+    <div
+      className={params.className || "tw-w-full tw-aspect-square tw-relative"}
+    >
       {(appLoading.appIsLoading || appLoading.appIsLoading) && (
-        <div>
+        <div
+          className={
+            "tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-z-10"
+          }
+        >
           <SpinnerLoading />
           {appLoading.isLoadingSlow && <span>Still loading...</span>}
         </div>

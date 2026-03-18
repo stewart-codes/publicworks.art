@@ -19,7 +19,7 @@ import {
 import { GetStaticProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import { stores } from "src/store/stores";
 import { useNumMintedDb } from "../../src/hooks/useNumMintedDb";
@@ -79,6 +79,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 };
 //InferGetStaticPropsType<typeof getStaticProps>
+// Slugs that should default to showing the live view
+const LIVE_VIEW_DEFAULT_SLUGS = ["helio"];
+
 const WorkPage = ({ work }: { work: WorkSerializable }) => {
   const router = useRouter();
   // fetch num tokens
@@ -87,6 +90,9 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     error: numMintedError,
     isLoading: numMintedLoading,
   } = useNumMintedDb(work?.slug, 2000);
+
+  const defaultToLive = LIVE_VIEW_DEFAULT_SLUGS.includes(work.slug);
+  const [showLive, setShowLive] = useState(defaultToLive);
 
   const [previewTokenId, setPreviewTokenId] = useState<string | null>(null);
   useEffect(() => {
@@ -102,48 +108,87 @@ const WorkPage = ({ work }: { work: WorkSerializable }) => {
     refresh: false,
   });
 
+  const imageUrl = useMemo(() => {
+    if (metadata?.data?.image) {
+      return normalizeIpfsUri(metadata.data.image);
+    }
+    if (work.coverImageCid) {
+      return normalizeIpfsUri("ipfs://" + work.coverImageCid);
+    }
+    return null;
+  }, [metadata?.data?.image, work.coverImageCid]);
+
   return (
     <>
       <div>
         <Container>
           <RowSquareContainer>
-            <div
-              className={`${styles.align_center} align-self-center`}
-              style={{ minHeight: 500 }}
-            >
+            <div className={"tw-w-full tw-aspect-square tw-relative"}>
               {metadata.isLoading ? (
-                <SpinnerLoading />
-              ) : metadata.isError ? (
+                <div
+                  className={
+                    "tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center"
+                  }
+                >
+                  <SpinnerLoading />
+                </div>
+              ) : metadata.isError || !metadata?.data?.animation_url ? (
                 <img
-                  style={{ maxWidth: 500 }}
+                  className={"tw-w-full tw-h-full tw-object-contain"}
                   src={normalizeIpfsUri("ipfs://" + work.coverImageCid)}
                 />
-              ) : metadata?.data?.animation_url ? (
+              ) : showLive ? (
                 <LiveMedia
-                  ipfsUrl={metadata?.data?.animation_url}
+                  ipfsUrl={metadata.data.animation_url}
                   minHeight={500}
+                  className={"tw-w-full tw-h-full tw-relative"}
+                />
+              ) : imageUrl ? (
+                <img
+                  className={"tw-w-full tw-h-full tw-object-contain"}
+                  src={imageUrl}
                 />
               ) : (
-                <img
-                  style={{ maxWidth: 500 }}
-                  src={normalizeIpfsUri("ipfs://" + work.coverImageCid)}
+                <LiveMedia
+                  ipfsUrl={metadata.data.animation_url}
+                  minHeight={500}
+                  className={"tw-w-full tw-h-full tw-relative"}
                 />
               )}
             </div>
-            <div className={" mt-2 text-end fw-light fst-italic"}>
-              <Link
-                href={
-                  previewTokenId ? `/work/${work.slug}/${previewTokenId}` : "#"
-                }
-              >
-                <span className={""}>
-                  {metadata.data ? (
-                    <>Showing #{previewTokenId}</>
-                  ) : (
-                    <>Showing cover image</>
-                  )}
-                </span>
-              </Link>
+            <div
+              className={
+                "mt-2 d-flex justify-content-between align-items-center"
+              }
+            >
+              <div>
+                {metadata?.data?.animation_url && (
+                  <Button
+                    variant={showLive ? "outline-secondary" : "outline-primary"}
+                    size="sm"
+                    onClick={() => setShowLive((v) => !v)}
+                  >
+                    {showLive ? "Show Image" : "View Live"}
+                  </Button>
+                )}
+              </div>
+              <div className={"fw-light fst-italic"}>
+                <Link
+                  href={
+                    previewTokenId
+                      ? `/work/${work.slug}/${previewTokenId}`
+                      : "#"
+                  }
+                >
+                  <span>
+                    {metadata.data ? (
+                      <>Showing #{previewTokenId}</>
+                    ) : (
+                      <>Showing cover image</>
+                    )}
+                  </span>
+                </Link>
+              </div>
             </div>
           </RowSquareContainer>
         </Container>
