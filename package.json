@@ -90,6 +90,7 @@
     "sharp": "^0.31.3",
     "superjson": "^1.10.0",
     "tmp": "^0.2.1",
+    "typeorm": "^0.3.28",
     "unzipit": "^1.4.3",
     "unzipper": "^0.10.14",
     "use-async-effect": "^2.2.7",
