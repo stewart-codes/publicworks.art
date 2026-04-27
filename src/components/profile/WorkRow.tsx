@@ -28,8 +28,7 @@ function EditButtonDropdown({ work }: { work: WorkSerializable }) {
   return (
     <Dropdown as={ButtonGroup}>
       <Link href={`/create/${work.id}`}>
-        {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */
-        }
+        {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */}
         <ButtonPWFRef as="a" variant={"outline-secondary"}>
           Edit
         </ButtonPWFRef>
@@ -135,7 +134,10 @@ export const WorkRow: FC<Props> = ({ work, onChange }: Props) => {
               }}
             />
             <div>
-              <Link href={`/create/${work.id}/status`} className={"text-decoration-none"}>
+              <Link
+                href={`/create/${work.id}/status`}
+                className={"text-decoration-none"}
+              >
                 Token Mint Status
               </Link>
             </div>

@@ -8,14 +8,14 @@ import {
 import { UserRepoDdbAdaptor } from "./ddb/adaptor/user-adaptor";
 import { UserRepoDdb } from "./ddb/user-repo-ddb";
 import { IndexerStoreI } from "./indexerStoreI";
+import { AppDataSource } from "./pg/data-source";
+import { IndexerRepoPg } from "./pg/indexer-store-pg";
+import { RepositoryPgAdaptor } from "./pg/project-adaptor-pg";
+import { RepositoryPg } from "./pg/repository-pg";
+import { UserRepoPg } from "./pg/user-store-pg";
+import { ReadonlyProjectRepository } from "./project-repository-readonly";
 import { ProjectRepositoryI } from "./projectRepositoryI";
 import { UserRepoI } from "./user.types";
-import { RepositoryPgAdaptor } from "./pg/project-adaptor-pg";
-import { UserRepoPg } from "./pg/user-store-pg";
-import { IndexerRepoPg } from "./pg/indexer-store-pg";
-import { AppDataSource } from "./pg/data-source";
-import { RepositoryPg } from "./pg/repository-pg";
-import { ReadonlyProjectRepository } from "./project-repository-readonly";
 
 type Stores = {
   project: ProjectRepositoryI;
@@ -23,26 +23,29 @@ type Stores = {
   indexer: IndexerStoreI;
 };
 
- type Services = {
+type Services = {
   initialize: () => Promise<void>;
   close: () => Promise<void>;
- } & Stores
+} & Stores;
 // Call once at startup before constructing the app when DB_DRIVER=postgres. No-op for dynamo.
 export const initDb = async (): Promise<void> => {
-  if (usePg()) {
+  if (isPg()) {
     if (!AppDataSource.isInitialized) await AppDataSource.initialize();
   }
 };
 
-const usePg=()=>{
-  return (process.env.DB_DRIVER ?? 'dynamo') === 'postgres'
-}
+const isPg = () => {
+  return (process.env.DB_DRIVER ?? "dynamo") === "postgres";
+};
 
 const buildDynamoServices = (): Services => {
   const tableName = process.env.DDB_TABLE_NAME;
-  if (!tableName) throw new Error('DDB_TABLE_NAME is not set');
+  if (!tableName) throw new Error("DDB_TABLE_NAME is not set");
   const client = new DynamoDBClient();
-  const adaptor = new RepositoryDbbAdaptor(new RepositoryDdb(tableName, client), new UserRepoDdb(tableName, client));
+  const adaptor = new RepositoryDbbAdaptor(
+    new RepositoryDdb(tableName, client),
+    new UserRepoDdb(tableName, client)
+  );
   return {
     initialize: async (): Promise<void> => {
       return;
@@ -65,11 +68,12 @@ const buildPostgresServices = (): Services => {
   let initPromise: Promise<unknown> | null = null;
   return {
     initialize: async (): Promise<void> => {
-      if (!AppDataSource.isInitialized && !initPromise) initPromise = AppDataSource.initialize();
+      if (!AppDataSource.isInitialized && !initPromise)
+        initPromise = AppDataSource.initialize();
       return initPromise as Promise<void>;
     },
     close: async (): Promise<void> => {
-      AppDataSource.destroy()
+      AppDataSource.destroy();
     },
     project: new ReadonlyProjectRepository(new RepositoryPgAdaptor(repo)),
     user: new UserRepoPg(repo),
@@ -80,10 +84,11 @@ const buildPostgresServices = (): Services => {
 // Synchronous — safe to call from synchronous Express app constructors.
 // Requires initDb() to have been awaited first when DB_DRIVER=postgres.
 export const factory = (): Services => {
-  const driver = process.env.DB_DRIVER ?? 'dynamo';
-  return driver === 'postgres' ? buildPostgresServices() : buildDynamoServices();
+  const driver = process.env.DB_DRIVER ?? "dynamo";
+  return driver === "postgres"
+    ? buildPostgresServices()
+    : buildDynamoServices();
 };
-
 
 let storesInternal: Stores | null = null;
 export const stores = (): Stores => {
@@ -91,17 +96,16 @@ export const stores = (): Stores => {
     return storesInternal;
   }
 
-  if (usePg()){
+  if (isPg()) {
     const svc = buildPostgresServices();
     storesInternal = {
-      project: (svc.project),
+      project: svc.project,
       user: svc.user,
       indexer: svc.indexer,
     };
     return storesInternal;
   }
 
-  
   const client = new DynamoDBClient();
   const tableName = process.env.DDB_TABLE_NAME;
   if (!tableName) {

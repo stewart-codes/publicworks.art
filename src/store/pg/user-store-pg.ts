@@ -1,16 +1,16 @@
 // src/repository/pg/user-store-pg.ts
-import chainInfo from 'src/stargaze/chainInfo';
-import { UserEntity } from '../model';
-import { UserPg } from '../model/pg/user.pg.schema';
-import { UserRepoI } from '../user.types';
-import { createId } from '../uuid';
-import { RepositoryPg } from './repository-pg';
+import chainInfo from "src/stargaze/chainInfo";
+import { UserEntity } from "../model";
+import { UserPg } from "../model/pg/user.pg.schema";
+import { UserRepoI } from "../user.types";
+import { createId } from "../uuid";
+import { RepositoryPg } from "./repository-pg";
 
 const mapUserPgToEntity = (u: UserPg): UserEntity => {
   const e = new UserEntity();
   e.id = u.id;
   e.address = u.address;
-  e.name = u.name ?? '';
+  e.name = u.name ?? "";
   e.createdDate = u.createdAt;
   e.updatedDate = u.updatedAt;
   e.ownedWorks = [];
@@ -26,7 +26,11 @@ export class UserRepoPg implements UserRepoI {
   }
 
   async createIfNeeded(address: string): Promise<UserEntity | null> {
-    const row = await this.repo.createUserIfNotExists(chainInfo().chainId, address, createId());
+    const row = await this.repo.createUserIfNotExists(
+      chainInfo().chainId,
+      address,
+      createId()
+    );
     return row ? mapUserPgToEntity(row) : null;
   }
 }

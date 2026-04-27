@@ -32,8 +32,7 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
       <div className={"card-body"}>
         {/*<Card.Body>*/}
         <Link href={url}>
-          {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */
-          }
+          {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */}
           <Card.Title>{blog.title}</Card.Title>
         </Link>
         <Card.Text>{blog.blurb}</Card.Text>
