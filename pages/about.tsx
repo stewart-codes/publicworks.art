@@ -69,7 +69,7 @@ const AboutPage = () => {
           <h3 className={`${styles.subtitle} `}>Roadmap</h3>
 
           <p className={`${styles.abouttext} `}>
-            <Link href={"/roadmap"} passHref={true}>
+            <Link href={"/roadmap"}>
               Read the roadmap
             </Link>
           </p>

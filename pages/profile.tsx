@@ -109,7 +109,6 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
           </span>
         ))}
       {/*))}*/}
-
       {userWorksPage.isSuccess && hasItems && (
         <div>
           <div className={"mt-3"}>
@@ -170,7 +169,7 @@ export const UserWorks: FC<UserWorksProps> = (props: UserWorksProps) => {
         <div>
           <div>You haven't created any Works yet.</div>
           <div>
-            <Link href={"/create"} passHref={true}>
+            <Link href={"/create"}>
               <ButtonPW variant={"secondary"}>Create Work</ButtonPW>
             </Link>
           </div>

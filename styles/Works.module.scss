@@ -1,4 +1,4 @@
-@import "../styles/variables.module";
+@use "../styles/variables.module" as *;
 
 .workCardContainer {
   background-color: rgba(0, 245, 245, 0);

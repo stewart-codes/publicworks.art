@@ -203,7 +203,7 @@ const WorkTokenPage = ({
       <div>
         <Container>
           {work ? (
-            <Link href={`/work/${work?.slug}`} passHref>
+            <Link href={`/work/${work?.slug}`}>
               <span>{`<- Back to ${work?.slug}`}</span>
             </Link>
           ) : (

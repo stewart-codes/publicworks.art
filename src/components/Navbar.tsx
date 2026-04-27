@@ -18,7 +18,7 @@ export const NavBar: FC = () => {
   return (
     <Navbar bg="white" variant="light" expand="sm">
       <Container fluid>
-        <Link href={"/"} passHref>
+        <Link href={"/"}>
           <Navbar.Brand className={styles.navTitle}>
             PublicWorks.Art
           </Navbar.Brand>
@@ -38,7 +38,7 @@ export const NavBar: FC = () => {
         <Navbar.Collapse className="justify-content-end">
           {sgwallet.wallet && (
             <Navbar.Text>
-              <Link passHref={true} href={"/create"}>
+              <Link href={"/create"}>
                 <Button style={{ marginRight: "1rem" }} variant="primary">
                   Create
                 </Button>
@@ -51,7 +51,9 @@ export const NavBar: FC = () => {
               <span>
                 <span>
                   <ButtonGroup aria-label="Basic example">
-                    <Link passHref={true} href={"/profile"} legacyBehavior>
+                    <Link href={"/profile"}>
+                      {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */
+                      }
                       <Button variant="secondary">
                         {username ? username : undefined}
                         {!username &&

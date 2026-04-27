@@ -8,6 +8,7 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
   const url = `/blog/${blog.slug}`;
   return (
     // <Link href={url}>
+    // </Link>
     <div className={"card w-75"}>
       <div className={"card-img-top overflow-hidden"}>
         <Link href={url}>
@@ -28,10 +29,11 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
         </Link>
       </div>
       {/*<Card.Img variant="top" src={blog.image} />*/}
-
       <div className={"card-body"}>
         {/*<Card.Body>*/}
-        <Link href={url} passHref={false} legacyBehavior={true}>
+        <Link href={url}>
+          {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */
+          }
           <Card.Title>{blog.title}</Card.Title>
         </Link>
         <Card.Text>{blog.blurb}</Card.Text>
@@ -46,6 +48,5 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
         <Card.Link href={url}>Read more</Card.Link>
       </Card.Body>
     </div>
-    // </Link>
   );
 };

@@ -1,5 +1,5 @@
-@import "/styles/colors.scss";
-@import "/styles/variables.module";
+@use "/styles/colors.scss" as *;
+@use "/styles/variables.module" as *;
 .workTitleLink {
   font-size: 1.25rem;
   text-decoration: none;

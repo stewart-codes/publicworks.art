@@ -27,7 +27,7 @@ const Home = () => {
               <li>
                 <p className={`${styles.abouttext} `}>
                   September 16, 2022: Launch Work 1{" "}
-                  <Link href={"/work/helio"} passHref>
+                  <Link href={"/work/helio"}>
                     Helio
                   </Link>
                 </p>
